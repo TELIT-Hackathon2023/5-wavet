@@ -39,7 +39,7 @@ const loginUser = async (req, res) => {
     });
 }
 const signupUser = async (req, res) => {
-    const { password, email, firstname, secondname} = req.body
+    const { password, email, firstName, secondName} = req.body
     var emails = []
     client.query(`SELECT email FROM employee`, async function (err, result) {
         if (err) throw err;
@@ -52,11 +52,10 @@ const signupUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
 
-        var sql = `INSERT INTO employee (ID, password, email, firstname, secondname, verified) VALUES (NULL,${"'" + hash + "','" + email + "','" + firstname + secondname + false})`;
+        var sql = `INSERT INTO employee (ID, password, email, firstname, secondname, verified) VALUES (NULL,${"'" + hash + "','" + email + "','" + firstName + "','" + secondName +  "','" + false})`;
         client.query(sql, function (err, result) {
             if (err) {
                 res.status(400).json(err)
-
             } else {
                 noticationMail(email);
 
