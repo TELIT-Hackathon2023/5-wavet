@@ -29,7 +29,7 @@ const loginUser = async (req, res) => {
                 res.status(400).json({ error: "Nesprávne heslo!" })
                 return
             }
-            const token = createToken(user.ID, user.rights)
+            const token = createToken(user.id, user.rights)
             user.password = 'hidden'
             user.token = token
             res.status(200).json(user)
@@ -59,11 +59,7 @@ const signupUser = async (req, res) => {
                 res.status(400).json(err)
                 console.log(err);
             } else {
-                var rights = 0
-                noticationMail(email);
-
-                const token = createToken(result.insertId, rights)
-                res.status(200).json({ email, firstName, lastName, rights, token })
+                loginUser({ body: { email, password } }, res)
             }
 
         });
