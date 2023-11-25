@@ -53,22 +53,21 @@ router.get('/in_range', (req, res) => {
     });
 });
 
-router.post('/reservation', (req, res) => {
+router.post('/', (req, res) => {
     const { employee_id, car_id, start_time, end_time, status } = req.body;
-
     const sql = `
         INSERT INTO reservation (employee_id, car_id, start_time, end_time, status, created_at)
-        VALUES (${employee_id}, '${car_id}', '${start_time}', '${end_time}', '${status}', NOW())
+        VALUES (${employee_id}, ${car_id}, TO_TIMESTAMP(${start_time}), TO_TIMESTAMP(${end_time}), '${status}', NOW())
         RETURNING *;
     `;
 
     client.query(sql, (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
+            console.log(err);
         } else {
             const reservationId = result.rows[0].id;
             scheduleAction(reservationId);
-
             res.status(201).json(result);
         }
     });
