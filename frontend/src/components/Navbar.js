@@ -1,12 +1,18 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useLogout } from "../hooks/useLogout";
 import { useAuthContext } from "../hooks/useAuthContext";
 
 const Navbar = () => {
     const { logout } = useLogout()
     const { user } = useAuthContext()
-    console.log(window.location.pathname);
+
+    const [url, setUrl] = useState(useLocation().pathname);
+    console.log(useLocation().pathname);
+    useEffect(() => {
+        setUrl(window.location.pathname)
+
+    }, [useLocation().pathname])
 
     return (
         <nav className="h-16 w-screen">
@@ -23,7 +29,7 @@ const Navbar = () => {
                     </div>
                     <div>
                         {!user && <Link to={"/login"} className="btn !bg-white !text-accent font-bold">Prihlásiť</Link>}
-                        {(user && window.location.pathname === "/") && <Link to={"/home"} className="btn !bg-white !text-accent font-bold">Rezervovať</Link>}
+                        {(user && url === "/") && <Link to={"/home"} className="btn !bg-white !text-accent font-bold">Rezervovať</Link>}
 
                     </div>
                 </div>

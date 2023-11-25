@@ -47,7 +47,7 @@ router.get('/evc', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    const { employee_id, evc } = req.body;
+    const { employee_id, evc, name } = req.body;
 
     const sql = `
         INSERT INTO car (employee_id, evc)
