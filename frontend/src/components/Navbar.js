@@ -6,7 +6,7 @@ import { useAuthContext } from "../hooks/useAuthContext";
 const Navbar = () => {
     const { logout } = useLogout()
     const { user } = useAuthContext()
-
+    console.log(window.location.pathname);
 
     return (
         <nav className="h-16 w-screen">
@@ -23,7 +23,7 @@ const Navbar = () => {
                     </div>
                     <div>
                         {!user && <Link to={"/login"} className="btn !bg-white !text-accent font-bold">Prihlásiť</Link>}
-                        {user && <Link to={"/login"} className="btn !bg-white !text-accent font-bold" onClick={logout}>Odhlásiť</Link>}
+                        {(user && window.location.pathname === "/") && <Link to={"/home"} className="btn !bg-white !text-accent font-bold">Rezervovať</Link>}
 
                     </div>
                 </div>
