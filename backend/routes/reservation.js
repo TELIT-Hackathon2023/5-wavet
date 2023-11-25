@@ -66,6 +66,9 @@ router.post('/reservation', async (req, res) => {
         if (err) {
             res.status(500).json({ error: err });
         } else {
+            const reservationId = result.rows[0].id;
+            scheduleAction(reservationId);
+
             res.status(201).json(result);
         }
     });
@@ -81,5 +84,14 @@ router.delete('/id/:id', (req, res) => {
         }
     });
 });
+
+function scheduleAction(reservationId) {
+    const actionDate = new Date();
+    actionDate.setSeconds(actionDate.getSeconds() + 30);
+
+    schedule.scheduleJob(actionDate, async () => {
+        console.log(`Action for reservation ${reservationId} after 15 minutes`);
+    });
+}
 
 module.exports = router;
