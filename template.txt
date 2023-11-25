@@ -1,9 +1,4 @@
-import AdminNavbar from "../components/AdminNavbar";
-
-
-
-const Home = () => {
-    return (
+return (
         <div className="flex">
             <AdminNavbar />
             <div className="flex-1 p-8 ">
@@ -11,6 +6,3 @@ const Home = () => {
             </div>
         </div>
     );
-}
-
-export default Home;
