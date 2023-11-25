@@ -90,7 +90,25 @@ function scheduleAction(reservationId) {
     actionDate.setSeconds(actionDate.getSeconds() + 30);
 
     schedule.scheduleJob(actionDate, async () => {
-        console.log(`Action for reservation ${reservationId} after 15 minutes`);
+        const statusQuery = `SELECT status FROM reservation WHERE id = ${reservationId}`;
+        client.query(statusQuery, (statusErr, statusResult) => {
+            if (statusErr) {
+                console.error(`Chyba pri kontrole stavu rezervácie: ${statusErr}`);
+            } else {
+                const aktualnyStav = statusResult.rows[0].status;
+
+                if (aktualnyStav !== 'active') {
+                    const deleteQuery = `DELETE FROM reservation WHERE id = ${reservationId}`;
+                    client.query(deleteQuery, (deleteErr, deleteResult) => {
+                        if (deleteErr) {
+                            console.error(`Chyba pri odstraňovaní rezervácie: ${deleteErr}`);
+                        } else {
+                            console.log(`Rezervácia ${reservationId} odstránená po 30 sekundách`);
+                        }
+                    });
+                }
+            }
+        });
     });
 }
 
