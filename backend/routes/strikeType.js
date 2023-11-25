@@ -14,7 +14,7 @@ router.get('/', (res) => {
     });
 });
 
-router.get('/id', (req, res) => {
+router.get('/id/:id', (req, res) => {
     const sql = `SELECT * FROM strike_type WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
     });
 });
 
-router.delete('/id', (req, res) => {
+router.delete('/id/:id', (req, res) => {
     const sql = `DELETE FROM strike_type WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {

@@ -14,7 +14,7 @@ router.get('/', (res) => {
     });
 });
 
-router.get('/id', (req, res) => {
+router.get('/id/:id', (req, res) => {
     const sql = `SELECT * FROM reservation WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -25,8 +25,8 @@ router.get('/id', (req, res) => {
     });
 });
 
-router.get('/employee_id', (req, res) => {
-    const sql = `SELECT * FROM reservation WHERE employee_id = ${req.params.employee_id}`;
+router.get('/employee_id/:id', (req, res) => {
+    const sql = `SELECT * FROM reservation WHERE employee_id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
@@ -36,7 +36,7 @@ router.get('/employee_id', (req, res) => {
     });
 });
 
-router.get('/in_range', (req, res) => {
+router.get('/:in_range', (req, res) => {
     const { startRange, endRange, status } = req.query;
 
     const sql = `
@@ -53,7 +53,7 @@ router.get('/in_range', (req, res) => {
     });
 });
 
-router.post('/reservation', async (req, res) => {
+router.post('/:reservation', async (req, res) => {
     const { employee_id, start_time, end_time, status } = req.body;
     
     const sql = `
@@ -71,7 +71,7 @@ router.post('/reservation', async (req, res) => {
     });
 });
 
-router.delete('/id', (req, res) => {
+router.delete('/id/:id', (req, res) => {
     const sql = `DELETE FROM employee WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {

@@ -14,7 +14,7 @@ router.get('/', (res) => {
     });
 });
 
-router.get('/id', (req, res) => {
+router.get('/id/:id', (req, res) => {
     const sql = `SELECT * FROM strike WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -25,8 +25,8 @@ router.get('/id', (req, res) => {
     });
 });
 
-router.get('/employee_id', (req, res) => {
-    const sql = `SELECT * FROM strike WHERE employee_id = ${req.params.employee_id}`;
+router.get('/employee_id/:id', (req, res) => {
+    const sql = `SELECT * FROM strike WHERE employee_id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
     });
 });
 
-router.delete('/id', (req, res) => {
+router.delete('/id/:id', (req, res) => {
     const sql = `DELETE FROM strike WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
