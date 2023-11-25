@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const client = require('../database/databasepg');
 
-router.get('/spot', (res) => {
+router.get('/', (res) => {
     const sql = 'SELECT * FROM spot';
     client.query(sql, (err, result) => {
         if (err) {
@@ -13,7 +13,7 @@ router.get('/spot', (res) => {
     });
 });
 
-router.get('/spot/:id', (req, res) => {
+router.get('/id', (req, res) => {
     const sql = `SELECT * FROM spot WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -24,7 +24,7 @@ router.get('/spot/:id', (req, res) => {
     });
 });
 
-router.get('/spot/:name', (req, res) => {
+router.get('/name', (req, res) => {
     const sql = `SELECT * FROM spot WHERE name = ${req.params.name}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -35,7 +35,7 @@ router.get('/spot/:name', (req, res) => {
     });
 });
 
-router.get('/spot/:is_free', (req, res) => {
+router.get('/is_free', (req, res) => {
     const sql = `SELECT * FROM spot WHERE is_free = ${req.params.is_free}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -46,7 +46,7 @@ router.get('/spot/:is_free', (req, res) => {
     });
 });
 
-router.get('/spot/:current_car', (req, res) => {
+router.get('/current_car', (req, res) => {
     var sql = "SELECT * FROM spot WHERE current_car = 1";
     client.query(sql, function (err, result) {
         if (err) {
@@ -59,7 +59,7 @@ router.get('/spot/:current_car', (req, res) => {
     });
 })
 
-router.delete('/spot/:id', (req, res) => {
+router.delete('/id', (req, res) => {
     const sql = `DELETE FROM spot WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {

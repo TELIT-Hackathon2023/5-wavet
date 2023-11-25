@@ -3,7 +3,7 @@ const router = express.Router();
 const client = require('../database/databasepg');
 const bcrypt = require('bcrypt');
 
-router.get('/employee', (res) => {
+router.get('/', (res) => {
     const sql = 'SELECT * FROM employee';
     client.query(sql, (err, result) => {
         if (err) {
@@ -14,7 +14,7 @@ router.get('/employee', (res) => {
     });
 });
 
-router.get('/employee/:id', (req, res) => {
+router.get('/id', (req, res) => {
     const sql = `SELECT * FROM employee WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -25,7 +25,7 @@ router.get('/employee/:id', (req, res) => {
     });
 });
 
-router.get('/employee/:first_name', (req, res) => {
+router.get('/first_name', (req, res) => {
     const sql = `SELECT * FROM employee WHERE first_name = ${req.params.first_name}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -36,7 +36,7 @@ router.get('/employee/:first_name', (req, res) => {
     });
 });
 
-router.get('/employee/:second_name', (req, res) => {
+router.get('/second_name', (req, res) => {
     const sql = `SELECT * FROM employee WHERE second_name = ${req.params.second_name}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -47,7 +47,7 @@ router.get('/employee/:second_name', (req, res) => {
     });
 });
 
-router.get('/employee/:email', (req, res) => {
+router.get('/email', (req, res) => {
     const sql = `SELECT * FROM employee WHERE email = ${req.params.email}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -58,7 +58,7 @@ router.get('/employee/:email', (req, res) => {
     });
 });
 
-router.get('/employee/:verified', (req, res) => {
+router.get('/verified', (req, res) => {
     const sql = `SELECT * FROM employee WHERE verified = ${req.params.verified}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -69,7 +69,7 @@ router.get('/employee/:verified', (req, res) => {
     });
 });
 
-router.get('/employee/:rights', (req, res) => {
+router.get('/rights', (req, res) => {
     const sql = `SELECT * FROM employee WHERE rights = ${req.params.rights}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -80,7 +80,7 @@ router.get('/employee/:rights', (req, res) => {
     });
 });
 
-router.post('/employee', async (req, res) => {
+router.post('/id', async (req, res) => {
     const { first_name, last_name, email, password, phone_number, verified, rights } = req.body;
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -100,7 +100,7 @@ router.post('/employee', async (req, res) => {
     });
 });
 
-router.delete('/employee/:id', (req, res) => {
+router.delete('/id', (req, res) => {
     const sql = `DELETE FROM employee WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {

@@ -3,7 +3,7 @@ const router = express.Router();
 const client = require('../database/databasepg');
 const bcrypt = require('bcrypt');
 
-router.get('/strike', (res) => {
+router.get('/', (res) => {
     const sql = 'SELECT * FROM strike';
     client.query(sql, (err, result) => {
         if (err) {
@@ -14,7 +14,7 @@ router.get('/strike', (res) => {
     });
 });
 
-router.get('/strike/:id', (req, res) => {
+router.get('/id', (req, res) => {
     const sql = `SELECT * FROM strike WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -25,7 +25,7 @@ router.get('/strike/:id', (req, res) => {
     });
 });
 
-router.get('/strike/employee/:employee_id', (req, res) => {
+router.get('/employee_id', (req, res) => {
     const sql = `SELECT * FROM strike WHERE employee_id = ${req.params.employee_id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -36,7 +36,7 @@ router.get('/strike/employee/:employee_id', (req, res) => {
     });
 });
 
-router.post('/strike', async (req, res) => {
+router.post('/', async (req, res) => {
     const { employee_id, strike_type } = req.body;
 
     const sql = `
@@ -54,7 +54,7 @@ router.post('/strike', async (req, res) => {
     });
 });
 
-router.delete('/strike/:id', (req, res) => {
+router.delete('/id', (req, res) => {
     const sql = `DELETE FROM strike WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {

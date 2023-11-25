@@ -3,7 +3,7 @@ const router = express.Router();
 const client = require('../database/databasepg');
 const bcrypt = require('bcrypt');
 
-router.get('/reservation', (res) => {
+router.get('/', (res) => {
     const sql = 'SELECT * FROM reservation';
     client.query(sql, (err, result) => {
         if (err) {
@@ -14,7 +14,7 @@ router.get('/reservation', (res) => {
     });
 });
 
-router.get('/reservation/:id', (req, res) => {
+router.get('/id', (req, res) => {
     const sql = `SELECT * FROM reservation WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -25,7 +25,7 @@ router.get('/reservation/:id', (req, res) => {
     });
 });
 
-router.get('/reservation/:employee_id', (req, res) => {
+router.get('/employee_id', (req, res) => {
     const sql = `SELECT * FROM reservation WHERE employee_id = ${req.params.employee_id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -36,12 +36,13 @@ router.get('/reservation/:employee_id', (req, res) => {
     });
 });
 
-router.get('/reservation/in_range', (req, res) => {
+router.get('/in_range', (req, res) => {
     const { startRange, endRange, status } = req.query;
 
     const sql = `
         SELECT * FROM reservation
-        WHERE status != 'canceled' AND (start_time BETWEEN ${startRange} AND ${endRange}) OR (end_time BETWEEN ${startRange} AND ${endRange})`;
+        WHERE status != 'canceled' 
+        AND((start_time BETWEEN ${startRange} AND ${endRange}) OR (end_time BETWEEN ${startRange} AND ${endRange}))`;
 
     client.query(sql, (err, result) => {
         if (err) {
@@ -70,7 +71,7 @@ router.post('/reservation', async (req, res) => {
     });
 });
 
-router.delete('/employee/:id', (req, res) => {
+router.delete('/id', (req, res) => {
     const sql = `DELETE FROM employee WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {

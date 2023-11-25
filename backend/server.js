@@ -26,6 +26,12 @@ app.use((req, res, next) => {
 
 app.use('/api/user', userRoutes)
 app.use('/api/year', yearRoutes)
+app.use('/api/spot', spotRoutes)
+app.use('/api/car', carRoutes)
+app.use('/api/reservation', reservationRoutes)
+app.use('/api/employee', employeeRoutes)
+app.use('/api/strike', strikeRoutes)
+app.use('/api/strikeType', strikeTypeRoutes)
 
 
 // listen for requests

@@ -3,7 +3,7 @@ const router = express.Router();
 const client = require('../database/databasepg');
 const bcrypt = require('bcrypt');
 
-router.get('/strike_type', (res) => {
+router.get('/', (res) => {
     const sql = 'SELECT * FROM strike_type';
     client.query(sql, (err, result) => {
         if (err) {
@@ -14,7 +14,7 @@ router.get('/strike_type', (res) => {
     });
 });
 
-router.get('/strike_type/:id', (req, res) => {
+router.get('/id', (req, res) => {
     const sql = `SELECT * FROM strike_type WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -25,7 +25,7 @@ router.get('/strike_type/:id', (req, res) => {
     });
 });
 
-router.post('/strike_type', async (req, res) => {
+router.post('/', async (req, res) => {
     const { description, severity } = req.body;
 
     const sql = `
@@ -43,7 +43,7 @@ router.post('/strike_type', async (req, res) => {
     });
 });
 
-router.delete('/strike_type/:id', (req, res) => {
+router.delete('/id', (req, res) => {
     const sql = `DELETE FROM strike_type WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
