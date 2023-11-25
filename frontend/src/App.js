@@ -8,6 +8,7 @@ import Signup from './pages/Signup'
 import Navbar from "./components/Navbar"
 import Footer from './components/Footer';
 import Landing from './pages/Landing'
+import Profile from './pages/Profile'
 
 function App() {
   const { user } = useAuthContext()
@@ -20,6 +21,7 @@ function App() {
           <Route path="login" element={!user ? <Login /> : <Navigate to={"/home"} />} />
           <Route path="signup" element={!user ? <Signup /> : <Navigate to={"/home"} />} />
           <Route path="home" element={user ? <Home /> : <Navigate to={"/login"} />} />
+          <Route path="profile/:id" element={user ? <Profile /> : <Navigate to={"/login"} />} />
           {/* <Route path="teams/:id" element={<UserTeam />} /> */}
         </Routes>
         <Footer />
