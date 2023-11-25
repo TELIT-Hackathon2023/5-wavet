@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 
 const noticationMail = (to) => {
     const mailOptions = {
-        from: 'wavethackbot@gmail.com',
+        from: 'wavet@outlook.sk',
         to,
         subject: 'Verify your e-mail address',
         text: 'Hello, this is notification mail, if you want verified your email address click here: https://www.random.sk'
