@@ -86,7 +86,7 @@ router.delete('/id/:id', (req, res) => {
 });
 
 function scheduleAction(reservationId) {
-    const actionDate = new Date();
+    const actionDate = new Date(start_time);
     actionDate.setSeconds(actionDate.getSeconds() + 30);
 
     schedule.scheduleJob(actionDate, async () => {
