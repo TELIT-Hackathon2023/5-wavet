@@ -3,6 +3,12 @@ require('dotenv').config()
 const express = require('express')
 const userRoutes = require('./routes/user')
 const yearRoutes = require('./routes/year')
+const spotRoutes = require('./routes/spot')
+const carRoutes = require('./routes/car')
+const reservationRoutes = require('./routes/reservation')
+const employeeRoutes = require('./routes/employee')
+const strikeRoutes = require('./routes/strike')
+const strikeTypeRoutes = require('./routes/strikeType')
 
 var client = require("./database/databasepg");
 var cors = require('cors')
