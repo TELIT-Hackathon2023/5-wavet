@@ -7,11 +7,11 @@ module.exports = {
         'desktop': '1680px',
       },
       width: {
-        'functional': '50vw'
+        'functional': '80vw'
       },
       colors: {
         'web-gray': '#232323',
-        'accent': "#EF770D",
+        'accent': "#e20074",
         'borders': "#D9D9D9",
         'dark-text': "#848484",
         'admin-gray': "#d4d4d4"
