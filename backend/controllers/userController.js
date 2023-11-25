@@ -71,10 +71,21 @@ const signupUser = async (req, res) => {
     });
 }
 
+const verifyUser = async (req, res) => {
+    const { id } = req.query.id
+    client.query(`UPDATE employee SET verified = true WHERE id = ${id}`, function (err, result) {
+        if (err) {
+            res.status(400).json(err)
+        } else {
+            res.status(200).json({ action: true, message: "Succesfully verified" })
+        }
+    });
+}
+
 
 const createToken = (ID, rights) => {
     return jwt.sign({ ID, rights }, "AE>iCm.8gjT4fZIZNAmxP8RF7/2G^N$!b@£4Z@^O`'su:~55tX", { expiresIn: '2w' })
 }
 
 
-module.exports = { signupUser, loginUser }
+module.exports = { signupUser, loginUser, verifyUser }
