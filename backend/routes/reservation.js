@@ -95,9 +95,9 @@ function scheduleAction(reservationId) {
             if (statusErr) {
                 console.error(`Chyba pri kontrole stavu rezervácie: ${statusErr}`);
             } else {
-                const aktualnyStav = statusResult.rows[0].status;
+                const actualState = statusResult.rows[0].status;
 
-                if (aktualnyStav !== 'active') {
+                if (actualState !== 'active') {
                     const deleteQuery = `DELETE FROM reservation WHERE id = ${reservationId}`;
                     client.query(deleteQuery, (deleteErr, deleteResult) => {
                         if (deleteErr) {
