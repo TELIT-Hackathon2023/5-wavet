@@ -3,8 +3,8 @@ const router = express.Router()
 var client = require('../database/databasepg')
 
 
-router.get('/event', (req, res) => {
-    client.query(`SELECT * FROM event WHERE year = ${req.query.year}`, function (err, result) {
+router.get('/id', (req, res) => {
+    client.query(`SELECT * FROM id WHERE car = ${req.query.id}`, function (err, result) {
         if (err) {
             res.status(500).json({ error: err })
 
