@@ -24,7 +24,7 @@ router.get('/id/:id', (req, res) => {
     });
 });
 
-router.get('/:name', (req, res) => {
+router.get('/name', (req, res) => {
     const sql = `SELECT * FROM spot WHERE name = ${req.params.name}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -35,7 +35,7 @@ router.get('/:name', (req, res) => {
     });
 });
 
-router.get('/:is_free', (req, res) => {
+router.get('/is_free', (req, res) => {
     const sql = `SELECT * FROM spot WHERE is_free = ${req.params.is_free}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -46,7 +46,7 @@ router.get('/:is_free', (req, res) => {
     });
 });
 
-router.get('/:current_car', (req, res) => {
+router.get('/current_car', (req, res) => {
     var sql = "SELECT * FROM spot WHERE current_car = 1";
     client.query(sql, function (err, result) {
         if (err) {

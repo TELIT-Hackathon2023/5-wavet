@@ -25,7 +25,7 @@ router.get('/id/:id', (req, res) => {
     });
 });
 
-router.get('/:first_name', (req, res) => {
+router.get('/first_name', (req, res) => {
     const sql = `SELECT * FROM employee WHERE first_name = ${req.params.first_name}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -36,7 +36,7 @@ router.get('/:first_name', (req, res) => {
     });
 });
 
-router.get('/:second_name', (req, res) => {
+router.get('/second_name', (req, res) => {
     const sql = `SELECT * FROM employee WHERE second_name = ${req.params.second_name}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -47,7 +47,7 @@ router.get('/:second_name', (req, res) => {
     });
 });
 
-router.get('/:email', (req, res) => {
+router.get('/email', (req, res) => {
     const sql = `SELECT * FROM employee WHERE email = ${req.params.email}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -58,7 +58,7 @@ router.get('/:email', (req, res) => {
     });
 });
 
-router.get('/:verified', (req, res) => {
+router.get('/verified', (req, res) => {
     const sql = `SELECT * FROM employee WHERE verified = ${req.params.verified}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -69,7 +69,7 @@ router.get('/:verified', (req, res) => {
     });
 });
 
-router.get('/:rights', (req, res) => {
+router.get('/rights', (req, res) => {
     const sql = `SELECT * FROM employee WHERE rights = ${req.params.rights}`;
     client.query(sql, (err, result) => {
         if (err) {

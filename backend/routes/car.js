@@ -24,7 +24,7 @@ router.get('/id/:id', (req, res) => {
     });
 });
 
-router.get('/:employee_id/:id', (req, res) => {
+router.get('/employee_id/:id', (req, res) => {
     const sql = `SELECT * FROM car WHERE employee_id = ${req.params.id}`;
     client.query(sql, (err, result) => {
         if (err) {
@@ -35,7 +35,7 @@ router.get('/:employee_id/:id', (req, res) => {
     });
 });
 
-router.get('/:evc', (req, res) => {
+router.get('/evc', (req, res) => {
     const sql = `SELECT * FROM car WHERE evc = ${req.params.evc}`;
     client.query(sql, (err, result) => {
         if (err) {

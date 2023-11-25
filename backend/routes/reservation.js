@@ -36,7 +36,7 @@ router.get('/employee_id/:id', (req, res) => {
     });
 });
 
-router.get('/:in_range', (req, res) => {
+router.get('/in_range', (req, res) => {
     const { startRange, endRange, status } = req.query;
 
     const sql = `
@@ -53,7 +53,7 @@ router.get('/:in_range', (req, res) => {
     });
 });
 
-router.post('/:reservation', async (req, res) => {
+router.post('/reservation', async (req, res) => {
     const { employee_id, start_time, end_time, status } = req.body;
 
     const sql = `
