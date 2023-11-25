@@ -19,14 +19,7 @@ const Navbar = () => {
                     </Link>
 
                     <div className="w-[50vw] block">
-                        {user && <nav className="flex mx-auto w-[33vw] justify-around child:px-1">
-                            <Link to={"/games"}>Zápasy</Link>
-                            <Link to={"/leaderboard"}>Tabuľka</Link>
-                            <Link to={"/stats"}>Štatistiky</Link>
-                            <Link to={"/schedule"}>Program</Link>
-                            <Link to={"/history"}>História</Link>
-                            <Link to={"/gallery"}>Foto</Link>
-                        </nav>}
+
                     </div>
                     <div>
                         {!user && <Link to={"/login"} className="btn !bg-white !text-accent font-bold">Prihlásiť</Link>}

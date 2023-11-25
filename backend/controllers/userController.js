@@ -11,18 +11,18 @@ const loginUser = async (req, res) => {
         return
     }
 
-    var sql = `SELECT * FROM admin WHERE email = '${email}'`;
+    var sql = `SELECT * FROM employee WHERE email = '${email}'`;
     client.query(sql, async function (err, result) {
         if (err) {
             res.status(400).json(err)
-
+            console.log(err);
         } else {
-            console.log(result);
-            if (result.length !== 1) {
+            console.log(result.rows[0]);
+            if (result.rows.length !== 1) {
                 res.status(400).json({ error: "Nesprávny email!" })
                 return
             }
-            const user = result[0];
+            const user = result.rows[0];
 
             const match = await bcrypt.compare(password, user.password)
             if (!match) {
