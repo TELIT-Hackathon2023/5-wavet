@@ -6,7 +6,7 @@ const AdminNavbar = () => {
     const { logout } = useLogout()
     const { user } = useAuthContext();
     return (
-        <div className=" w-[15vw] min-w-[180px]">
+        <div className=" w-[15vw] min-w-[180px] z-40">
             <div className="bg-web-gray  w-[15vw] fixed min-w-[180px] h-screen  top-0 left-0   py-16 px-4 text-white flex flex-col justify-between z-50">
                 <div>
                     <p className="text-center  pt-3 text-accent"><Link className="text-3xl" to={'/home'} >AdminPanel</Link></p>

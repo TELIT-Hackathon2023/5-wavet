@@ -42,7 +42,7 @@ router.get('/:in_range', (req, res) => {
     const sql = `
         SELECT * FROM reservation
         WHERE status != 'canceled' 
-        AND((start_time BETWEEN ${startRange} AND ${endRange}) OR (end_time BETWEEN ${startRange} AND ${endRange}))`;
+        AND((start_time BETWEEN TO_TIMESTAMP(${startRange}) AND  TO_TIMESTAMP(${endRange})) OR (end_time BETWEEN  TO_TIMESTAMP(${startRange}) AND  TO_TIMESTAMP(${endRange})))`;
 
     client.query(sql, (err, result) => {
         if (err) {
@@ -55,7 +55,7 @@ router.get('/:in_range', (req, res) => {
 
 router.post('/:reservation', async (req, res) => {
     const { employee_id, start_time, end_time, status } = req.body;
-    
+
     const sql = `
         INSERT INTO reservation (employee_id, start_time, end_time, status, created_at)
         VALUES (${employee_id}, '${start_time}', '${end_time}', '${status}', NOW())
