@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const client = require('../database/databasepg');
 
-router.get('/', (res) => {
+router.get('/', (req, res) => {
     const sql = 'SELECT * FROM spot';
     client.query(sql, (err, result) => {
         if (err) {

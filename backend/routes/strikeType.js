@@ -3,7 +3,7 @@ const router = express.Router();
 const client = require('../database/databasepg');
 const bcrypt = require('bcrypt');
 
-router.get('/', (res) => {
+router.get('/', (req, res) => {
     const sql = 'SELECT * FROM strike_type';
     client.query(sql, (err, result) => {
         if (err) {

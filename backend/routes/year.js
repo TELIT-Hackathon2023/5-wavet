@@ -4,7 +4,7 @@ var client = require('../database/databasepg')
 
 
 router.get('/id', (req, res) => {
-    client.query(`SELECT * FROM id WHERE car = ${req.query.id}`, function (err, result) {
+    client.query(`SELECT * FROM id WHERE year = ${req.query.year}`, function (err, result) {
         if (err) {
             res.status(500).json({ error: err })
 
