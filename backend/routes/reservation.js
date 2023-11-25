@@ -36,6 +36,23 @@ router.get('/reservation/:employee_id', (req, res) => {
     });
 });
 
+router.get('/reservation/in_range', (req, res) => {
+    const { startRange, endRange, status } = req.query;
+
+    const sql = `
+        SELECT * FROM reservation
+        WHERE status = '${status}'
+        AND (start_time >= '${startRange}' AND end_time <= '${endRange}')
+    `;
+
+    client.query(sql, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: err });
+        } else {
+            res.status(200).json(result);
+        }
+    });
+});
 
 router.post('/reservation', async (req, res) => {
     const { employee_id, start_time, end_time, status } = req.body;
