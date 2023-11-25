@@ -43,7 +43,7 @@ const signupUser = async (req, res) => {
     var emails = []
     client.query(`SELECT email FROM employee`, async function (err, result) {
         if (err) throw err;
-        emails = result.map(e => e.email)
+        emails = result.rows(e => e.email)
         if (emails.includes(email)) {
             console.log("eerr");
             res.status(400).json({ error: "Email sa už používa" })
@@ -61,7 +61,7 @@ const signupUser = async (req, res) => {
 
                 const token = createToken(result.insertId, rights)
 
-                res.status(200).json({ email, name, rights, token })
+                res.status(200).json({ email, firstName, secondName, rights, token })
             }
 
         });
