@@ -54,11 +54,11 @@ router.get('/in_range', (req, res) => {
 });
 
 router.post('/reservation', async (req, res) => {
-    const { employee_id, start_time, end_time, status } = req.body;
+    const { employee_id, car_id, start_time, end_time, status } = req.body;
 
     const sql = `
         INSERT INTO reservation (employee_id, start_time, end_time, status, created_at)
-        VALUES (${employee_id}, '${start_time}', '${end_time}', '${status}', NOW())
+        VALUES (${employee_id}, '${car_id}', '${start_time}', '${end_time}', '${status}', NOW())
         RETURNING *;
     `;
 
