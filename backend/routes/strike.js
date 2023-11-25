@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
         if (err) {
             res.status(500).json({ error: err });
         } else {
-            res.status(200).json(result);
+            res.status(200).json(result.rows);
         }
     });
 });
@@ -20,7 +20,7 @@ router.get('/id/:id', (req, res) => {
         if (err) {
             res.status(500).json({ error: err });
         } else {
-            res.status(200).json(result);
+            res.status(200).json(result.rows);
         }
     });
 });
@@ -31,7 +31,7 @@ router.get('/employee_id/:id', (req, res) => {
         if (err) {
             res.status(500).json({ error: err });
         } else {
-            res.status(200).json(result);
+            res.status(200).json(result.rows);
         }
     });
 });
@@ -60,7 +60,7 @@ router.delete('/id/:id', (req, res) => {
         if (err) {
             res.status(500).json({ error: err });
         } else {
-            res.status(200).json(result);
+            res.status(200).json(result.rows);
         }
     });
 });

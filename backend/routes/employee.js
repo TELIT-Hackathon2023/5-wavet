@@ -95,7 +95,7 @@ router.post('/id/:id', async (req, res) => {
         if (err) {
             res.status(500).json({ error: err });
         } else {
-            res.status(201).json(result);
+            res.status(201).json(result.rows);
         }
     });
 });
