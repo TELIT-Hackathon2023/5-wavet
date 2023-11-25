@@ -9,20 +9,6 @@ import Navbar from "./components/Navbar"
 import Footer from './components/Footer';
 
 function App() {
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     console.log("getting data");
-  //     const response = await fetch(`${process.env.REACT_APP_PATH}/x`)
-  //     const json = await response.json()
-  //     if (response.ok) {
-  //       console.log(json);
-  //     } else {
-  //       alert(json.error)
-  //     }
-  //   }
-
-  //   getData()
-  // }, [])
   const { user } = useAuthContext()
   return (
     <BrowserRouter >

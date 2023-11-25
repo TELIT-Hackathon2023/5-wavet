@@ -1,7 +1,7 @@
 var client = require("../database/databasepg");
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-
+const noticationMail = require("./mail")
 
 
 const loginUser = async (req, res) => {
@@ -39,11 +39,12 @@ const loginUser = async (req, res) => {
     });
 }
 const signupUser = async (req, res) => {
-    const { password, email, firstName, secondName} = req.body
+    const { password, email, firstName, lastName } = req.body
+    console.log(password, email, firstName, lastName);
     var emails = []
     client.query(`SELECT email FROM employee`, async function (err, result) {
         if (err) throw err;
-        emails = result.rows(e => e.email)
+        emails = result.rows.map(e => e.email)
         if (emails.includes(email)) {
             console.log("eerr");
             res.status(400).json({ error: "Email sa už používa" })
@@ -52,16 +53,17 @@ const signupUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
 
-        var sql = `INSERT INTO employee (ID, password, email, firstname, secondname, verified) VALUES (NULL,${"'" + hash + "','" + email + "','" + firstName + "','" + secondName +  "','" + false})`;
+        var sql = `INSERT INTO employee (password, email, first_name, last_name, verified) VALUES (${"'" + hash + "','" + email + "','" + firstName + "','" + lastName + "'," + false})`;
         client.query(sql, function (err, result) {
             if (err) {
                 res.status(400).json(err)
+                console.log(err);
             } else {
+                var rights = 0
                 noticationMail(email);
 
                 const token = createToken(result.insertId, rights)
-
-                res.status(200).json({ email, firstName, secondName, rights, token })
+                res.status(200).json({ email, firstName, lastName, rights, token })
             }
 
         });

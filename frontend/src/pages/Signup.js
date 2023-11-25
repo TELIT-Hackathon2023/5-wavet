@@ -31,7 +31,7 @@ const Signup = () => {
             alert("Heslá je kratšie ako 6 znakov")
             return
         }
-
+        console.log(lastName);
         await signup(email, password, firstName, lastName)
     }
 
