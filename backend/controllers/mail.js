@@ -1,6 +1,6 @@
-var nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
 
-var transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: 'outlook',
     auth: {
         user: 'wavet@outlook.sk',
@@ -8,17 +8,25 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-var mailOptions = {
-    from: 'wavethackbot@gmail.com',
-    to: 'jakubkaras123@gmail.com',
-    subject: 'Notification',
-    text: 'For confirmation your e-mail address click here: https://random.sk'
+const noticationMail = (to) => {
+    const mailOptions = {
+        from: 'wavethackbot@gmail.com',
+        to,
+        subject: 'Verify your e-mail address',
+        text: 'Hello, this is notification mail, if you want verified your email address click here: https://www.random.sk'
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.error(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
 };
 
-transporter.sendMail(mailOptions, function(error, info) {
-    if (error) {
-        console.error(error);
-    } else {
-        console.log('Email sent: ' + info.response);
-    }
-});
+module.exports = noticationMail;
+
+
+
+
