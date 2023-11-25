@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const express = require('express')
 const userRoutes = require('./routes/user')
+const yearRoutes = require('./routes/year')
 
 var client = require("./database/databasepg");
 var cors = require('cors')
@@ -24,21 +25,8 @@ app.use((req, res, next) => {
 })
 
 app.use('/api/user', userRoutes)
+app.use('/api/year', yearRoutes)
 
-
-app.get('/x', (req, res) => {
-    client.query(`SELECT * FROM player`, function (err, result) {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ error: err.sqlMessage })
-
-        } else {
-            res.status(200).json(result.rows)
-            console.log(result);
-        }
-
-    });
-})
 
 // listen for requests
 app.listen(process.env.PORT, () => {

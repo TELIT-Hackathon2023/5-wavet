@@ -7,6 +7,7 @@ import Signup from './pages/Signup'
 
 import Navbar from "./components/Navbar"
 import Footer from './components/Footer';
+import Landing from './pages/Landing'
 
 function App() {
   const { user } = useAuthContext()
@@ -15,9 +16,10 @@ function App() {
       <main className='min-h-full flex flex-col' >
         <Navbar />
         <Routes className=''>
-          <Route index element={<Home />} />
-          <Route path="login" element={!user ? <Login /> : <Navigate to={"/admin"} />} />
-          <Route path="signup" element={!user ? <Signup /> : <Navigate to={"/admin"} />} />
+          <Route index element={<Landing />} />
+          <Route path="login" element={!user ? <Login /> : <Navigate to={"/home"} />} />
+          <Route path="signup" element={!user ? <Signup /> : <Navigate to={"/home"} />} />
+          <Route path="home" element={user ? <Home /> : <Navigate to={"/login"} />} />
           {/* <Route path="teams/:id" element={<UserTeam />} /> */}
         </Routes>
         <Footer />
