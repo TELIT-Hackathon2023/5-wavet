@@ -106,7 +106,7 @@ router.post('/', async (req, res) => {
 `;
 
   
-    client.query(sql,[employee_id, start_time, end_time, status, spot_id, car_id], (err, result) => {
+    client.query(sql,[employee_id, start_time/1000, end_time/1000, status, spot_id, car_id], (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
             console.log(err);
