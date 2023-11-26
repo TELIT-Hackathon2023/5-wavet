@@ -72,8 +72,7 @@ const signupUser = async (req, res) => {
 }
 
 const verifyUser = async (req, res) => {
-    const { id } = req.query.id
-    client.query(`UPDATE employee SET verified = true WHERE id = ${id}`, function (err, result) {
+    client.query(`UPDATE employee SET verified = true WHERE id = ${req.query.id}`, function (err, result) {
         if (err) {
             res.status(400).json(err)
         } else {
