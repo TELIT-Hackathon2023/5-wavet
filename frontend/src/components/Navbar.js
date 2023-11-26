@@ -8,7 +8,6 @@ const Navbar = () => {
     const { user } = useAuthContext()
 
     const [url, setUrl] = useState(useLocation().pathname);
-    console.log(useLocation().pathname);
     useEffect(() => {
         setUrl(window.location.pathname)
 
