@@ -70,6 +70,7 @@ const Home = () => {
             end_time: Date.now() + convertTimeToMilliseconds(`00:${15}`),
             car_id: 0
         })
+        console.log("user");
     }, [user])
 
     useEffect(() => {
@@ -82,6 +83,7 @@ const Home = () => {
             end_time: dates.start + convertTimeToMilliseconds(`00:${15}`),
             car_id: 0
         })
+        console.log("dates");
     }, [dates])
 
 
@@ -105,7 +107,8 @@ const Home = () => {
 
     const addReservation = async () => {
         setIsPending(true)
-        console.log(reservation.car_id);
+        console.log(reservation.start_time);
+        console.log(reservation.end_time);
         const response = await fetch(`${process.env.REACT_APP_PATH}/api/reservation/`, {
             method: 'POST',
             body: JSON.stringify({ ...reservation }),
@@ -144,9 +147,8 @@ const Home = () => {
     }
 
     function updateEnd(value) {
-        console.log(value);
         setEnd(value);
-        const endTimeInMilliseconds = convertTimeToMilliseconds(`00:${value}`);
+        const endTimeInMilliseconds = reservation.start_time + convertTimeToMilliseconds(`00:${value}`);
         setReservation({ ...reservation, end_time: endTimeInMilliseconds, spot_id: 0 });
     }
 
