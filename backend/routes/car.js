@@ -50,14 +50,15 @@ router.post('/', (req, res) => {
     const { employee_id, evc, name } = req.body;
 
     const sql = `
-        INSERT INTO car (employee_id, evc)
-        VALUES (${employee_id}, '${evc}', ${name})
+        INSERT INTO car (employee_id, evc, name)
+        VALUES (${employee_id}, '${evc}', '${name}')
         RETURNING *;
     `;
 
     client.query(sql, (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
+            console.log(err);
         } else {
             res.status(201).json(result);
         }
