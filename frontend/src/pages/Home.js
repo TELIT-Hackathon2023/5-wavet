@@ -15,6 +15,10 @@ const Home = () => {
     const { data: spots } = useFetch(`/api/spot`)
     const day = 24 * 60 * 60 * 1000;
     const [isPending, setIsPending] = useState(false)
+    const [canReserve, setCanReserve] = useState(true)
+    const [lastStrike, setLastStrike] = useState(Date.now())
+    
+    var plusMonth = new Date()
     var X = new Date()
     X.setHours(0, 0, 0, 0)
     const [dates, setDates] = useState({
@@ -30,6 +34,30 @@ const Home = () => {
         end_time: Date.now() + convertTimeToMilliseconds(`00:${15}`),
         car_id: 0
     })
+
+    useEffect(() => {
+        const getStrikes = async () => {
+            const response = await fetch(`${process.env.REACT_APP_PATH}/api/strike?id=${user.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                }
+            });
+            const json = await response.json()
+
+            if(response.ok){
+                if(json.length >= 3){
+                    setCanReserve(false)
+                    json.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+                    setLastStrike(new Date(json[0].created_at))
+                }
+            }else{
+                alert(json.error)
+            }
+        }
+        getStrikes()
+    },[])
 
     useEffect(() => {
         setReservation({
@@ -118,6 +146,16 @@ const Home = () => {
 
     }
 
+    function addOneMonth(date) {
+        const newDate = new Date(date);
+        newDate.setUTCMonth(newDate.getUTCMonth() + 1);
+        return newDate;
+      }
+
+      useEffect(() => {
+        plusMonth = addOneMonth(lastStrike)
+      }, [lastStrike])
+
     return (
         <div className="flex">
             <AdminNavbar />
@@ -125,7 +163,7 @@ const Home = () => {
                 <img src="./map.png" className="opacity-30" alt="" />
                 <div className="fixed right-8 top-20 z-10 h-[80vh] w-80 bg-white p-5  ">
                     <h2 className="text-center text-2xl text-accent font-semibold">Reserve parking</h2>
-                    <form >
+                    {canReserve && <form >
                         <div className="flex flex-col my-5 child:mb-3 select-none">
                             <div className="flex justify-around items-center px-12">
                                 <span className={`font-bold cursor-pointer text-2xl ${dates.start > Date.now() ? "text-accent" : "text-accent-light"}`} onClick={e => (dates.start - day < Date.now() ? setDates({ ...dates, start: Date.now() }) : setDates({ ...dates, start: dates.start - day }))}>&#60;</span>
@@ -142,8 +180,8 @@ const Home = () => {
                         </div>
 
                         <div className="btn w-min mx-auto" onClick={searchSpaces}>Search</div>
-                    </form>
-                    <form action="">
+                    </form>}
+                    {canReserve && <form action="">
                         <div className="flex flex-col my-5 child:mb-3">
                             <input type="number" value={reservation.spot_id} onChange={e => setReservation({ ...reservation, spot_id: Number(e.target.value) })} name="" id="" />
                             {!!cars && <div className=" mx-auto text-center">
@@ -160,8 +198,15 @@ const Home = () => {
                         </div>
 
                         <div className="btn w-min mx-auto" onClick={addReservation}>Reserve</div>
-                    </form>
-
+                    </form>}
+                    {!canReserve && 
+                        <div className="flex h-full flex-col items-center justify-center">
+                            
+                            <h2 className="font-semibold text-3xl">Too many strikes!</h2>
+                            <p className="text-center">You cannot make any more reservations until</p>
+                            <p>{format(plusMonth, "EEEE d.L.yyyy")}</p>
+                        </div>
+                    }
                 </div>
 
 
