@@ -98,6 +98,8 @@ router.get('/in_range', (req, res) => {
 
 router.post('/', async (req, res) => {
     const { employee_id, start_time, end_time, status, spot_id, car_id} = req.body;
+    console.log(start_time);
+    console.log(end_time);
 
     const sql = `
     INSERT INTO reservation (employee_id, start_time, end_time, status, created_at, spot_id, car_id)
