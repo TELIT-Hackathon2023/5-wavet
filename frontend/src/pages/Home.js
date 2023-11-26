@@ -107,8 +107,9 @@ const Home = () => {
 
     const addReservation = async () => {
         setIsPending(true)
-        console.log(reservation.start_time);
-        console.log(reservation.end_time);
+        console.log(new Date(reservation.start_time));
+        console.log(new Date(reservation.end_time));
+        console.log(reservation.start_time < reservation.end_time);
         const response = await fetch(`${process.env.REACT_APP_PATH}/api/reservation/`, {
             method: 'POST',
             body: JSON.stringify({ ...reservation }),
@@ -132,13 +133,13 @@ const Home = () => {
     function convertTimeToMilliseconds(timeString) {
         // Split the time string into hours and minutes
         const [hours, minutes] = timeString.split(':').map(Number);
-    
+
         // Calculate the total milliseconds
         const totalMilliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000);
-    
+
         return totalMilliseconds;
     }
-    
+
 
     function formatTimeToHHMM(date) {
         const hours = String(date.getHours()).padStart(2, '0');
@@ -148,6 +149,7 @@ const Home = () => {
 
     function updateEnd(value) {
         setEnd(value);
+        console.log(convertTimeToMilliseconds(`00:${value}`));
         const endTimeInMilliseconds = reservation.start_time + convertTimeToMilliseconds(`00:${value}`);
         setReservation({ ...reservation, end_time: endTimeInMilliseconds, spot_id: 0 });
     }
@@ -174,15 +176,18 @@ const Home = () => {
     }, [spots])
 
 
-    // let parkingSpotsData = [
-    //     { x: 0, y: 0, z: 0, color: 0x00ff00, id: 99 }, // Green spot
-    //     { x: 2, y: 0, z: 0, color: 0xff0000, id: 11 }, // Red spot
-    //     // Add more parking spot data as needed
-    // ];
-
-
     const handleSpotClick = (spotId) => {
         console.log('Spot clicked:', spotId);
+        setReservation({ ...reservation, spot_id: spotId })
+        spots.filter(x => {
+            if (x.id === spotId) {
+                x.color = 0x9c0251
+                x.height = 0.5
+            } else {
+                x.color = 0xe20074
+                x.height = 0.1
+            }
+        })
     };
 
 
@@ -199,23 +204,13 @@ const Home = () => {
                     e.color = 0xe20074
                 }
                 e.lable = e.name.toUpperCase();
-
+                e.height = 0.1
             })
             setParkingSpotsData(spots)
         }
 
 
     }, [spots])
-
-
-    // let parkingSpotsData = [
-    //     { x: 0, y: 0, z: 0, color: 0x00ff00, id: 99 }, // Green spot
-    //     { x: 2, y: 0, z: 0, color: 0xff0000, id: 11 }, // Red spot
-    //     // Add more parking spot data as needed
-    // ];
-
-
-
 
 
     function addOneMonth(date) {
@@ -255,9 +250,11 @@ const Home = () => {
                         <div className="btn w-min mx-auto" onClick={searchSpaces}>Search</div>
                     </form>}
                     {canReserve && <form action="">
-                        <div className="flex flex-col my-5 child:mb-3">
-                            <input type="number" value={reservation.spot_id} onChange={e => setReservation({ ...reservation, spot_id: e.target.value })} name="" id="" />
+                        {spots && <div className="flex flex-col my-5 child:mb-3">
                             {!!cars && <div className=" mx-auto text-center">
+                                <p>Spot</p>
+                                {/* <p>{spots.find(x => x.id = reservation.spot_id).id}</p> */}
+                                <p>{reservation.spot_id}</p>
                                 <p>Car</p>
                                 <select onChange={e => setReservation({ ...reservation, car_id: e.target.value })}>
                                     <option value=""></option>
@@ -268,7 +265,7 @@ const Home = () => {
                             </div>}
 
 
-                        </div>
+                        </div>}
 
                         <div className="btn w-min mx-auto" onClick={addReservation}>Reserve</div>
                     </form>}
