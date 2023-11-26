@@ -54,7 +54,7 @@ router.get('/in_range', (req, res) => {
     });
 });
 
-router.post('/reservation', async (req, res) => {
+router.post('/', async (req, res) => {
     const { employee_id, start_time, end_time, status } = req.body;
 
     const sql = `
