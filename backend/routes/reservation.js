@@ -85,9 +85,12 @@ router.get('/in_range', (req, res) => {
     const sql = `
         SELECT * FROM reservation
         WHERE status != 'canceled' 
-        AND((start_time BETWEEN TO_TIMESTAMP(${startRange}) AND  TO_TIMESTAMP(${endRange})) OR (end_time BETWEEN  TO_TIMESTAMP(${startRange}) AND  TO_TIMESTAMP(${endRange})))`;
+        AND (start_time BETWEEN TO_TIMESTAMP($1) AND TO_TIMESTAMP($2))
+        OR (end_time BETWEEN TO_TIMESTAMP($3) AND TO_TIMESTAMP($4))`;
 
-    client.query(sql, (err, result) => {
+    const values = [startRange, endRange, startRange, endRange];
+
+    client.query(sql, values, (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
         } else {
@@ -98,6 +101,7 @@ router.get('/in_range', (req, res) => {
 
 router.post('/', async (req, res) => {
     const { employee_id, start_time, end_time, status, spot_id, car_id} = req.body;
+
     console.log(start_time);
     console.log(end_time);
 
@@ -108,7 +112,7 @@ router.post('/', async (req, res) => {
 `;
 
   
-    client.query(sql,[employee_id, start_time/1000, end_time/1000, status, spot_id, car_id], (err, result) => {
+client.query(sql,[employee_id, start_time/1000, end_time/1000, status, spot_id, car_id], (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
             console.log(err);

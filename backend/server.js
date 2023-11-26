@@ -9,6 +9,7 @@ const reservationRoutes = require('./routes/reservation')
 const employeeRoutes = require('./routes/employee')
 const strikeRoutes = require('./routes/strike')
 const strikeTypeRoutes = require('./routes/strikeType')
+const gateRoutes = require('./routes/gate')
 
 var client = require("./database/databasepg");
 var cors = require('cors')
@@ -38,6 +39,7 @@ app.use('/api/reservation', reservationRoutes)
 app.use('/api/employee', employeeRoutes)
 app.use('/api/strike', strikeRoutes)
 app.use('/api/strikeType', strikeTypeRoutes)
+app.use('/api/gate', gateRoutes)
 
 
 // listen for requests
