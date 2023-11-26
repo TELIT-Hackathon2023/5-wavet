@@ -91,9 +91,9 @@ const updateUserNames = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
-    const {id, password} = req.body
+    const {id, new_password, old_password} = req.body
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt); 
+    const hash = await bcrypt.hash(new_password, salt); 
     client.query(`UPDATE employee SET password = '${hash}' WHERE id = ${id}`, function(err, result){
         if (err) {
             res.status(400).json({error:err})

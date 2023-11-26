@@ -37,7 +37,7 @@ const Profile = () => {
             setIsPending(true)
             const response = await fetch(`${process.env.REACT_APP_PATH}/api/user/password`, {
                 method: 'PATCH',
-                body: JSON.stringify({id: user.id, password: passwords.new }),
+                body: JSON.stringify({id: user.id, new_password: passwords.new, old_password: passwords.current}),
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${user.token}`
