@@ -8,14 +8,22 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const noticationMail = (to) => {
-    const mailOptions = {
-        from: 'wavet@outlook.sk',
-        to,
-        subject: 'Verify your e-mail address',
-        text: 'Hello, this is notification mail, if you want verified your email address click here: https://www.random.sk'
-    };
+const mailOptions1 = {
+    from: 'wavet@outlook.sk',
+    to,
+    subject: 'Notification about end of Reservation',
+    text: 'Your reservation ends in 10 minutes. If your vehicle remains parked in the spot after the reservation period expires, you will be penalized.'
+};
 
+const mailOptions2 = {
+    from: 'wavet@outlook.sk',
+    to,
+    subject: 'Verify your e-mail address',
+    text: 'Hello, this is notification mail, if you want verified your email address click here: https://www.random.sk'
+};
+
+const notificationMail = (to, mailOptions) => {
+    
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             console.error(error);
@@ -25,7 +33,10 @@ const noticationMail = (to) => {
     });
 };
 
-module.exports = noticationMail;
+module.exports = {
+    mailOptions1,
+    notificationMail
+};
 
 
 

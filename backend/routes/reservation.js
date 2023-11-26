@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const client = require('../database/databasepg');
-const bcrypt = require('bcrypt');
-const schedule = require('node-schedule');
+const notificationMail = require('../controllers/mail');
+const mailOptions1 = require('../controllers/mail');
 
 router.get('/', (req, res) => {
     const sql = 'SELECT * FROM reservation';
@@ -54,21 +54,22 @@ router.get('/in_range', (req, res) => {
     });
 });
 
-router.post('/', (req, res) => {
-    const { employee_id, car_id, start_time, end_time, status } = req.body;
+router.post('/reservation', async (req, res) => {
+    const { employee_id, start_time, end_time, status } = req.body;
+
     const sql = `
-        INSERT INTO reservation (employee_id, car_id, start_time, end_time, status, created_at)
-        VALUES (${employee_id}, ${car_id}, TO_TIMESTAMP(${start_time}), TO_TIMESTAMP(${end_time}), '${status}', NOW())
+        INSERT INTO reservation (employee_id, start_time, end_time, status, created_at)
+        VALUES (${employee_id}, '${start_time}', '${end_time}', '${status}', NOW())
         RETURNING *;
     `;
 
     client.query(sql, (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
-            console.log(err);
         } else {
             const reservationId = result.rows[0].id;
-            scheduleAction(reservationId);
+            scheduleAction(reservationId, start_time, end_time);
+
             res.status(201).json(result);
         }
     });
@@ -85,11 +86,13 @@ router.delete('/id/:id', (req, res) => {
     });
 });
 
-function scheduleAction(reservationId) {
+function scheduleAction(reservationId, start_time, end_time) {
     const actionDate = new Date(start_time);
+    const almostEnd = new Date(end_time);
     actionDate.setSeconds(actionDate.getSeconds() + 30);
+    almostEnd.setMinutes(almostEnd.getMinutes() + 10);
 
-    schedule.scheduleJob(actionDate, async () => {
+    schedule.scheduleJob(actionDate, almostEnd, async () => {
         const statusQuery = `SELECT status FROM reservation WHERE id = ${reservationId}`;
         client.query(statusQuery, (statusErr, statusResult) => {
             if (statusErr) {
@@ -106,9 +109,25 @@ function scheduleAction(reservationId) {
                             console.log(`Rezervácia ${reservationId} odstránená po 30 sekundách`);
                         }
                     });
+                } else {
+                    if(new Date() == almostEnd){
+                        sendNotificationMail(employee_id);
+                    }
                 }
             }
         });
+    });
+}
+
+function sendNotificationMail(employee_id) {
+    const emailQuery = `SELECT email FROM employee WHERE id = ${employee_id}`;
+    client.query(emailQuery, (emailErr, emailResult) => {
+        if (emailErr) {
+            console.error(`Error fetching employee email: ${emailErr}`);
+        } else {
+            const email = emailResult.rows[0].email;
+            notificationMail(email, mailOptions1);
+        }
     });
 }
 
