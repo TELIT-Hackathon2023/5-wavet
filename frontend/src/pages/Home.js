@@ -104,8 +104,8 @@ const Home = () => {
     }
 
     const addReservation = async () => {
-        console.log(reservation.car_id);
         setIsPending(true)
+        console.log(reservation.car_id);
         const response = await fetch(`${process.env.REACT_APP_PATH}/api/reservation/`, {
             method: 'POST',
             body: JSON.stringify({ ...reservation }),
@@ -129,10 +129,13 @@ const Home = () => {
     function convertTimeToMilliseconds(timeString) {
         // Split the time string into hours and minutes
         const [hours, minutes] = timeString.split(':').map(Number);
+    
         // Calculate the total milliseconds
-        const totalMilliseconds = (hours * 60 + minutes) * 60 * 1000;
+        const totalMilliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000);
+    
         return totalMilliseconds;
     }
+    
 
     function formatTimeToHHMM(date) {
         const hours = String(date.getHours()).padStart(2, '0');
@@ -141,10 +144,10 @@ const Home = () => {
     }
 
     function updateEnd(value) {
+        console.log(value);
         setEnd(value);
-        setReservation({ ...reservation, end_time: dates.start + convertTimeToMilliseconds(`00:${value}`), spot_id: 0 })
-
-
+        const endTimeInMilliseconds = convertTimeToMilliseconds(`00:${value}`);
+        setReservation({ ...reservation, end_time: endTimeInMilliseconds, spot_id: 0 });
     }
 
     const [parkingSpotsData, setParkingSpotsData] = useState([]);
