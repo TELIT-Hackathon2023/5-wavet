@@ -84,7 +84,6 @@ const Home = () => {
     }, [dates])
 
 
-    useEffect(() => console.log(reservation), [reservation])
 
     const searchSpaces = async () => {
 
@@ -103,7 +102,7 @@ const Home = () => {
     }
 
     const addReservation = async () => {
-        console.log(reservation);
+        console.log(reservation.car_id);
         setIsPending(true)
         const response = await fetch(`${process.env.REACT_APP_PATH}/api/reservation/`, {
             method: 'POST',
@@ -183,10 +182,10 @@ const Home = () => {
                     </form>}
                     {canReserve && <form action="">
                         <div className="flex flex-col my-5 child:mb-3">
-                            <input type="number" value={reservation.spot_id} onChange={e => setReservation({ ...reservation, spot_id: Number(e.target.value) })} name="" id="" />
+                            <input type="number" value={reservation.spot_id} onChange={e => setReservation({ ...reservation, spot_id: e.target.value })} name="" id="" />
                             {!!cars && <div className=" mx-auto text-center">
                                 <p>Car</p>
-                                <select onChange={e => setReservation({ ...reservation, car_id: Number(e.target.value) })}>
+                                <select onChange={e => setReservation({ ...reservation, car_id: e.target.value })}>
                                     <option value=""></option>
                                     {cars.map(e => (
                                         <option key={e.id} className="justify-between flex" value={e.id}>{e.name}  -- {e.evc} </option>

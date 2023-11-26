@@ -55,20 +55,22 @@ router.get('/in_range', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { employee_id, start_time, end_time, status } = req.body;
+    const { employee_id, start_time, end_time, status, spot_id, car_id} = req.body;
 
     const sql = `
-        INSERT INTO reservation (employee_id, start_time, end_time, status, created_at)
-        VALUES (${employee_id}, '${start_time}', '${end_time}', '${status}', NOW())
-        RETURNING *;
-    `;
+    INSERT INTO reservation (employee_id, start_time, end_time, status, created_at, spot_id, car_id)
+    VALUES ($1, TO_TIMESTAMP($2), TO_TIMESTAMP($3), $4, NOW(), $5, $6)
+    RETURNING *;
+`;
 
-    client.query(sql, (err, result) => {
+  
+    client.query(sql,[employee_id, start_time, end_time, status, spot_id, car_id], (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
+            console.log(err);
         } else {
             const reservationId = result.rows[0].id;
-            scheduleAction(reservationId, start_time, end_time);
+            //scheduleAction(reservationId, start_time, end_time);
 
             res.status(201).json(result);
         }
