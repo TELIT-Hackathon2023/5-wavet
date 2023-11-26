@@ -19,6 +19,7 @@ const Home = () => {
     const [canReserve, setCanReserve] = useState(true)
     const [lastStrike, setLastStrike] = useState(Date.now())
     const [spot, setSpot] = useState(0);
+    const [reservationsX, setReservationsX] = useState([])
 
     var plusMonth = new Date()
     var X = new Date()
@@ -109,7 +110,7 @@ const Home = () => {
 
         if (response.ok) {
             console.log(json);
-
+            setReservationsX(json)
         } else {
             alert(json)
         }
@@ -192,7 +193,7 @@ const Home = () => {
             temp.forEach(e => {
                 console.log(e);
                 console.log(reservations);
-                if (reservations.find(x => x.spot_id == e.id)) {
+                if (reservationsX.find(x => x.spot_id == e.id)) {
                     e.color = 0x999999
                 } else {
                     e.color = 0xe20074
