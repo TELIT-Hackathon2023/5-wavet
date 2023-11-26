@@ -15,6 +15,7 @@ const AdminNavbar = () => {
                         <div className="border-b border-dark-text"></div>
                         <Link to={'/home'} className="cursor-pointer text-xl  border-b border-dark-text py-2">Home</Link>
                         <Link to={'/profile/${user.id}'} className="cursor-pointer text-xl  border-b border-dark-text py-2">Profile</Link>
+                        <Link to={'/reservations/${user.id}'} className="cursor-pointer text-xl  border-b border-dark-text py-2">Reservations</Link>
                     </div>
                 </div>
 

@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import Landing from './pages/Landing'
 import Profile from './pages/Profile'
 import Verified from './pages/Verified'
+import ReservationList from './pages/ReservationList'
 
 function App() {
   const { user } = useAuthContext()
@@ -23,6 +24,7 @@ function App() {
           <Route path="signup" element={!user ? <Signup /> : <Navigate to={"/home"} />} />
           <Route path="home" element={user ? <Home /> : <Navigate to={"/login"} />} />
           <Route path="profile/:id" element={user ? <Profile /> : <Navigate to={"/login"} />} />
+          <Route path="reservations/:id" element={user ? <ReservationList /> : <Navigate to={"/login"} />} />
           <Route path="verified/:id" element={ <Verified />} />
           {/* <Route path="teams/:id" element={<UserTeam />} /> */}
         </Routes>
