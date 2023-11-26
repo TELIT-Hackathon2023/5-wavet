@@ -108,15 +108,17 @@ const ThreeScene = ({ parkingSpotsData, handleSpotClick }) => {
             // Dispose of the renderer explicitly
             rendererRef.current.dispose();
             rendererRef.current.forceContextLoss(); // Force context loss to release GPU resources
+            if (!!sceneRef.current) {
+                sceneRef.current.removeChild(rendererRef.current.domElement);
+            }
 
-            sceneRef.current.removeChild(rendererRef.current.domElement);
         };
     }, [parkingSpotsData, handleSpotClick, x, y, z]);
 
     return (<div>
-        <input type="number" value={x} onChange={e => setX(e.target.value)} />
+        {/* <input type="number" value={x} onChange={e => setX(e.target.value)} />
         <input type="number" value={y} onChange={e => setY(e.target.value)} />
-        <input type="number" value={z} onChange={e => setZ(e.target.value)} />
+        <input type="number" value={z} onChange={e => setZ(e.target.value)} /> */}
         <div ref={sceneRef} />
     </div>);
 };

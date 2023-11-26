@@ -151,7 +151,6 @@ const Home = () => {
 
     useEffect(() => {
         if (!!spots) {
-            console.log(spots);
             let temp = [...spots]
 
             temp = temp.forEach(e => {
@@ -186,7 +185,6 @@ const Home = () => {
 
     useEffect(() => {
         if (!!spots) {
-            console.log(spots);
             let temp = [...spots]
 
             temp = temp.forEach(e => {
