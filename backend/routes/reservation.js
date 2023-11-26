@@ -30,7 +30,7 @@ router.get('/employee_id/:id', (req, res) => {
             const fetchCarDetails = (index) => {
                 if (index < reservations.length) {
                     const reservation = reservations[index];
-                    const carId = reservation.car_id; 
+                    const carId = reservation.car_id;
 
                     const sqlCar = `SELECT * FROM car WHERE id = $1`;
                     client.query(sqlCar, [carId], (carErr, carResult) => {
@@ -81,17 +81,17 @@ router.get('/employee_id/:id', (req, res) => {
 
 router.get('/in_range', (req, res) => {
     const { startRange, endRange, status } = req.query;
-
+    const x = Number(startRange) / 1000
+    const y = Number(endRange) / 1000
     const sql = `
-        SELECT * FROM reservation
-        WHERE status != 'canceled' 
-        AND (start_time BETWEEN TO_TIMESTAMP($1) AND TO_TIMESTAMP($2))
-        OR (end_time BETWEEN TO_TIMESTAMP($3) AND TO_TIMESTAMP($4))`;
+        SELECT *, (SELECT  TO_TIMESTAMP(${x})) as tx FROM reservation
+        WHERE  (start_time BETWEEN TO_TIMESTAMP(${x}) AND TO_TIMESTAMP(${y}))
+        OR (end_time BETWEEN TO_TIMESTAMP(${x}) AND TO_TIMESTAMP(${y}))`;
 
-    const values = [startRange, endRange, startRange, endRange];
 
-    client.query(sql, values, (err, result) => {
+    client.query(sql, (err, result) => {
         if (err) {
+            console.log(err);
             res.status(500).json({ error: err });
         } else {
             res.status(200).json(result.rows);
@@ -100,7 +100,7 @@ router.get('/in_range', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { employee_id, start_time, end_time, status, spot_id, car_id} = req.body;
+    const { employee_id, start_time, end_time, status, spot_id, car_id } = req.body;
 
     console.log(start_time);
     console.log(end_time);
@@ -111,8 +111,8 @@ router.post('/', async (req, res) => {
     RETURNING *;
 `;
 
-  
-client.query(sql,[employee_id, start_time/1000, end_time/1000, status, spot_id, car_id], (err, result) => {
+
+    client.query(sql, [employee_id, start_time / 1000, end_time / 1000, status, spot_id, car_id], (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
             console.log(err);
@@ -160,7 +160,7 @@ function scheduleAction(reservationId, start_time, end_time) {
                         }
                     });
                 } else {
-                    if(new Date() == almostEnd){
+                    if (new Date() == almostEnd) {
                         sendNotificationMail(employee_id);
                     }
                 }

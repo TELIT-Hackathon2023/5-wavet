@@ -18,6 +18,7 @@ const Home = () => {
     const [isPending, setIsPending] = useState(false)
     const [canReserve, setCanReserve] = useState(true)
     const [lastStrike, setLastStrike] = useState(Date.now())
+    const [spot, setSpot] = useState(0);
 
     var plusMonth = new Date()
     var X = new Date()
@@ -70,7 +71,6 @@ const Home = () => {
             end_time: Date.now() + convertTimeToMilliseconds(`00:${15}`),
             car_id: 0
         })
-        console.log("user");
     }, [user])
 
     useEffect(() => {
@@ -83,20 +83,33 @@ const Home = () => {
             end_time: dates.start + convertTimeToMilliseconds(`00:${15}`),
             car_id: 0
         })
-        console.log("dates");
     }, [dates])
+
+    useEffect(() => {
+        setReservation({ ...reservation, spot_id: spot })
+        if (spot === 0) {
+            handleSpotClick(0)
+        }
+    }, [spot])
+
+    useEffect(() => {
+        searchSpaces()
+
+    }, [reservation])
 
 
 
 
     const searchSpaces = async () => {
-
+        console.log(reservation.start_time);
+        console.log(new Date(reservation.start_time));
         setIsPending(true)
         const response = await fetch(`${process.env.REACT_APP_PATH}/api/reservation/in_range?startRange=${reservation.start_time}&endRange=${reservation.end_time}`)
         const json = await response.json()
 
         if (response.ok) {
             console.log(json);
+
         } else {
             alert(json)
         }
@@ -107,9 +120,6 @@ const Home = () => {
 
     const addReservation = async () => {
         setIsPending(true)
-        console.log(new Date(reservation.start_time));
-        console.log(new Date(reservation.end_time));
-        console.log(reservation.start_time < reservation.end_time);
         const response = await fetch(`${process.env.REACT_APP_PATH}/api/reservation/`, {
             method: 'POST',
             body: JSON.stringify({ ...reservation }),
@@ -121,7 +131,7 @@ const Home = () => {
         const json = await response.json()
 
         if (response.ok) {
-            console.log(json);
+            window.location.reload();
         } else {
             alert(json.error)
         }
@@ -149,45 +159,27 @@ const Home = () => {
 
     function updateEnd(value) {
         setEnd(value);
-        console.log(convertTimeToMilliseconds(`00:${value}`));
         const endTimeInMilliseconds = reservation.start_time + convertTimeToMilliseconds(`00:${value}`);
-        setReservation({ ...reservation, end_time: endTimeInMilliseconds, spot_id: 0 });
+        setReservation({ ...reservation, end_time: endTimeInMilliseconds });
+        setSpot(0)
     }
 
     const [parkingSpotsData, setParkingSpotsData] = useState([]);
 
-    useEffect(() => {
-        if (!!spots) {
-            let temp = [...spots]
-
-            temp = temp.forEach(e => {
-                if (reservations.find(x => x.spot_id === e.id)) {
-                    e.color = 0x999999
+    const handleSpotClick = (spotId) => {
+        setSpot(spotId)
+        if (spots) {
+            spots.filter(x => {
+                if (x.id === spotId) {
+                    x.color = 0x9c0251
+                    x.height = 0.5
                 } else {
-                    e.color = 0xe20074
+                    x.color = 0xe20074
+                    x.height = 0.1
                 }
-                e.lable = e.name.toUpperCase();
-
             })
-            setParkingSpotsData(spots)
         }
 
-
-    }, [spots])
-
-
-    const handleSpotClick = (spotId) => {
-        console.log('Spot clicked:', spotId);
-        setReservation({ ...reservation, spot_id: spotId })
-        spots.filter(x => {
-            if (x.id === spotId) {
-                x.color = 0x9c0251
-                x.height = 0.5
-            } else {
-                x.color = 0xe20074
-                x.height = 0.1
-            }
-        })
     };
 
 
@@ -197,8 +189,10 @@ const Home = () => {
         if (!!spots) {
             let temp = [...spots]
 
-            temp = temp.forEach(e => {
-                if (reservations.find(x => x.spot_id === e.id)) {
+            temp.forEach(e => {
+                console.log(e);
+                console.log(reservations);
+                if (reservations.find(x => x.spot_id == e.id)) {
                     e.color = 0x999999
                 } else {
                     e.color = 0xe20074
@@ -206,7 +200,7 @@ const Home = () => {
                 e.lable = e.name.toUpperCase();
                 e.height = 0.1
             })
-            setParkingSpotsData(spots)
+            setParkingSpotsData(temp)
         }
 
 
@@ -240,7 +234,7 @@ const Home = () => {
                             </div>
                             <div className=" mx-auto text-center">
                                 <p>From</p>
-                                <input type="time" value={formatTimeToHHMM(new Date(reservation.start_time))} onChange={e => { setReservation({ ...reservation, spot_id: 0, start_time: dates.start + convertTimeToMilliseconds(e.target.value), end_time: dates.start + convertTimeToMilliseconds(e.target.value) + convertTimeToMilliseconds(`00:${end}`) }) }} className="border-[3px] rounded-sm border-accent mx-3 px-3 py-1 w-36     " />
+                                <input type="time" value={formatTimeToHHMM(new Date(reservation.start_time))} onChange={e => { setSpot(0); setReservation({ ...reservation, start_time: dates.start + convertTimeToMilliseconds(e.target.value), end_time: dates.start + convertTimeToMilliseconds(e.target.value) + convertTimeToMilliseconds(`00:${end}`) }) }} className="border-[3px] rounded-sm border-accent mx-3 px-3 py-1 w-36     " />
                                 <p className="mt-3">Length</p>
                                 <NonlinearSlider end={end} updateEnd={updateEnd} />
                             </div>
@@ -249,26 +243,38 @@ const Home = () => {
 
                         <div className="btn w-min mx-auto" onClick={searchSpaces}>Search</div>
                     </form>}
-                    {canReserve && <form action="">
-                        {spots && <div className="flex flex-col my-5 child:mb-3">
-                            {!!cars && <div className=" mx-auto text-center">
-                                <p>Spot</p>
-                                {/* <p>{spots.find(x => x.id = reservation.spot_id).id}</p> */}
-                                <p>{reservation.spot_id}</p>
-                                <p>Car</p>
-                                <select onChange={e => setReservation({ ...reservation, car_id: e.target.value })}>
-                                    <option value=""></option>
-                                    {cars.map(e => (
-                                        <option key={e.id} className="justify-between flex" value={e.id}>{e.name}  -- {e.evc} </option>
-                                    ))}
-                                </select>
-                            </div>}
+                    {canReserve &&
+                        <div className="h-full">
+                            {spot !== 0 && <form action="">
+                                {spots && <div className="flex flex-col my-5 child:mb-3">
+                                    {!!cars && <div className=" mx-auto text-center">
+                                        <p>Spot</p>
+                                        {/* <p>{spots.find(x => x.id = reservation.spot_id).id}</p> */}
+                                        {spots && <p>{spots.find(x => x.id === spot).lable}</p>}
+                                        <p>Car</p>
+                                        <select onChange={e => setReservation({ ...reservation, car_id: e.target.value })}>
+                                            <option value=""></option>
+                                            {cars.map(e => (
+                                                <option key={e.id} className="justify-between flex" value={e.id}>{e.name}  -- {e.evc} </option>
+                                            ))}
+                                        </select>
+                                    </div>}
 
 
-                        </div>}
+                                </div>}
 
-                        <div className="btn w-min mx-auto" onClick={addReservation}>Reserve</div>
-                    </form>}
+                                <div className="btn w-min mx-auto" onClick={addReservation}>Reserve</div>
+                            </form>}
+                            {spot === 0 &&
+                                <div action="" className="text-center flex flex-col justify-center items-center h-1/3 text-accent text-lg">
+                                    <h1>Select free spot on map</h1>
+                                    <h2 className="text-sm">(higlighted in magenta)</h2>
+                                </div>
+                            }
+                        </div>
+
+
+                    }
                     {!canReserve &&
                         <div className="flex h-full flex-col items-center justify-center">
 
