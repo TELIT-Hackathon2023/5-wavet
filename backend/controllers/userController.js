@@ -2,6 +2,7 @@ var client = require("../database/databasepg");
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const noticationMail = require("./mail")
+const schedule = require('node-schedule');
 
 
 const loginUser = async (req, res) => {
@@ -59,7 +60,10 @@ const signupUser = async (req, res) => {
                 res.status(400).json(err)
                 console.log(err);
             } else {
-                loginUser({ body: { email, password } }, res)
+                loginUser({ body: { email, password } }, res);
+                    schedule.scheduleJob(new Date(result.rows[0].created_at.getTime() + 24 * 60 * 60 * 1000), async () => {
+                    deleteUnverifiedAccount(result.rows[0].id);
+                });
             }
 
         });
@@ -105,7 +109,35 @@ const updatePassword = async (req, res) => {
    
 }
 
+async function deleteUnverifiedAccount(userId) {
+    const checkSql = `
+        SELECT id FROM employee
+        WHERE id = $1 AND verified = false
+    `;
 
+    client.query(checkSql, [userId], (checkErr, checkResult) => {
+        if (checkErr) {
+            console.error(`Error checking unverified account: ${checkErr}`);
+        } else {
+            if (checkResult.rows.length > 0) {
+                const deleteSql = `
+                    DELETE FROM employee
+                    WHERE id = $1
+                `;
+
+                client.query(deleteSql, [userId], (deleteErr, deleteResult) => {
+                    if (deleteErr) {
+                        console.error(`Error deleting unverified account: ${deleteErr}`);
+                    } else {
+                        console.log(`Deleted unverified account successfully. Rows affected: ${deleteResult.rowCount}`);
+                    }
+                });
+            } else {
+                console.log(`Account with ID ${userId} is either verified or does not exist.`);
+            }
+        }
+    });
+}
 
 const createToken = (ID, rights) => {
     return jwt.sign({ ID, rights }, "AE>iCm.8gjT4fZIZNAmxP8RF7/2G^N$!b@£4Z@^O`'su:~55tX", { expiresIn: '2w' })
@@ -113,3 +145,4 @@ const createToken = (ID, rights) => {
 
 
 module.exports = { signupUser, loginUser, verifyUser, updateUserNames, updatePassword }
+

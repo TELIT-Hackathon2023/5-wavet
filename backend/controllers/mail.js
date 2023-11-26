@@ -22,6 +22,14 @@ const mailOptions2 = (to) => ({
     text: 'Hello, this is notification mail, if you want verified your email address click here: https://www.random.sk'
 });
 
+const mailOptions3 = (to, description) => ({
+    from: 'wavet@outlook.sk',
+    to,
+    subject: 'You have strike!',
+    text: `You should be more careful, you just received a strike for: ${description}`
+});
+
+
 const notificationMail = (to, mailOptions) => {
     transporter.sendMail(mailOptions(to), function (error, info) {
         if (error) {
@@ -35,5 +43,6 @@ const notificationMail = (to, mailOptions) => {
 module.exports = {
     mailOptions1,
     mailOptions2,
+    mailOptions3,
     notificationMail
 };
