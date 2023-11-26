@@ -4,6 +4,7 @@ import { format } from "date-fns"
 import { useFetch } from "../hooks/useFetch";
 import { useAuthContext } from "../hooks/useAuthContext";
 import NonlinearSlider from "../components/NonlinearSlider";
+import ThreeScene from "../components/ThreeScene";
 
 
 const Home = () => {
@@ -56,7 +57,7 @@ const Home = () => {
     }, [dates])
 
 
-    useEffect(() => console.log(reservation), [reservation])
+
 
     const searchSpaces = async () => {
 
@@ -118,19 +119,56 @@ const Home = () => {
 
     }
 
+    const [parkingSpotsData, setParkingSpotsData] = useState([]);
+
+    useEffect(() => {
+        if (!!spots) {
+            console.log(spots);
+            let temp = [...spots]
+
+            temp = temp.forEach(e => {
+                if (reservations.find(x => x.spot_id === e.id)) {
+                    e.color = 0x999999
+                } else {
+                    e.color = 0xe20074
+                }
+                e.lable = e.name.toUpperCase();
+
+            })
+            setParkingSpotsData(spots)
+        }
+
+
+    }, [spots])
+
+
+    // let parkingSpotsData = [
+    //     { x: 0, y: 0, z: 0, color: 0x00ff00, id: 99 }, // Green spot
+    //     { x: 2, y: 0, z: 0, color: 0xff0000, id: 11 }, // Red spot
+    //     // Add more parking spot data as needed
+    // ];
+
+
+    const handleSpotClick = (spotId) => {
+        console.log('Spot clicked:', spotId);
+    };
+
+
+
     return (
         <div className="flex">
             <AdminNavbar />
             <div className="flex-1 p-8 ">
-                <img src="./map.png" className="opacity-30" alt="" />
+                {/* <img src="./map.png" className="opacity-30" alt="" /> */}
+                <ThreeScene className={"w-[10vw]"} parkingSpotsData={parkingSpotsData} handleSpotClick={handleSpotClick} />
                 <div className="fixed right-8 top-20 z-10 h-[80vh] w-80 bg-white p-5  ">
                     <h2 className="text-center text-2xl text-accent font-semibold">Reserve parking</h2>
                     <form >
                         <div className="flex flex-col my-5 child:mb-3 select-none">
                             <div className="flex justify-around items-center px-12">
-                                <span className={`font-bold cursor-pointer text-2xl ${dates.start > Date.now() ? "text-accent" : "text-accent-light"}`} onClick={e => (dates.start - day < Date.now() ? setDates({ ...dates, start: Date.now() }) : setDates({ ...dates, start: dates.start - day }))}>&#60;</span>
+                                <span className={`font-bold cursor-pointer text-2xl ${dates.start > X.getTime() ? "text-accent" : "text-accent-light"}`} onClick={e => (dates.start - day < X.getTime() ? setDates({ ...dates, start: X.getTime() }) : setDates({ ...dates, start: dates.start - day }))}>&#60;</span>
                                 <span>{format(new Date(format(new Date(dates.start), "yyyy-MM-dd")), "EEEE d.L.")}</span>
-                                <span className={`font-bold cursor-pointer text-2xl ${dates.start < Date.now() + day ? "text-accent" : "text-accent-light"}`} onClick={e => { ((dates.start + day > Date.now() + day * 2) ? setDates({ ...dates, start: Date.now() + day * 2 }) : setDates({ ...dates, start: dates.start + day })) }}>&#62;</span>
+                                <span className={`font-bold cursor-pointer text-2xl ${dates.start <= X.getTime() + day ? "text-accent" : "text-accent-light"}`} onClick={e => { ((dates.start + day > X.getTime() + day * 2) ? setDates({ ...dates, start: X.getTime() + day * 2 }) : setDates({ ...dates, start: dates.start + day })) }}>&#62;</span>
                             </div>
                             <div className=" mx-auto text-center">
                                 <p>From</p>
