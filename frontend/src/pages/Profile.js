@@ -147,7 +147,7 @@ const Profile = () => {
             <AdminNavbar/>
             <div className="flex-1 p-8">
                 <div className="profile-header text-center mx-10  ">
-                    <img src="30x36.png"/>
+                    <img src="30x36.png" alt=""/>
                     <h2 className="text-5xl mb-2">{user.first_name} {user.last_name}</h2>
                     <p>{user.email}</p>
                 </div>
