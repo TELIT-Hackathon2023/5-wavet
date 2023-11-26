@@ -35,9 +35,9 @@ const Profile = () => {
         e.preventDefault()
         if(passwords.new === passwords.repeat && passwords.current.length > 0 && passwords.new.length > 0){
             setIsPending(true)
-            const response = await fetch(`${process.env.REACT_APP_PATH}/api/game/playoff`, {
-                method: 'PATCH', /* popripade PATCH, pri PATCH zadavas len hodnoty ktore chces menit */
-                body: JSON.stringify({ /* tu zadaj hodnoty ktore chces poslat na backend*/ }),
+            const response = await fetch(`${process.env.REACT_APP_PATH}/api/user/password`, {
+                method: 'PATCH',
+                body: JSON.stringify({id: user.id, password: passwords.new }),
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${user.token}`
@@ -47,7 +47,12 @@ const Profile = () => {
         
             const json = await response.json()
             if (response.ok) {
-                //tu vynuluj vstup a (optional) pridaj novu hodnotu do array starych
+                setPasswords({
+                    current: "",
+                    new: "",
+                    repeat: "",
+                })
+                setIsPending(false)
             } else {
                 alert(json.error)
             }

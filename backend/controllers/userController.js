@@ -90,6 +90,21 @@ const updateUserNames = async (req, res) => {
     });
 }
 
+const updatePassword = async (req, res) => {
+    const {id, password} = req.body
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt); 
+    client.query(`UPDATE employee SET password = '${hash}' WHERE id = ${id}`, function(err, result){
+        if (err) {
+            res.status(400).json({error:err})
+            console.log(err);
+        } else {
+            res.status(200).json({ action: true, message: "Password updated" })
+        }
+    });
+   
+}
+
 
 
 const createToken = (ID, rights) => {
@@ -97,4 +112,4 @@ const createToken = (ID, rights) => {
 }
 
 
-module.exports = { signupUser, loginUser, verifyUser, updateUserNames }
+module.exports = { signupUser, loginUser, verifyUser, updateUserNames, updatePassword }
