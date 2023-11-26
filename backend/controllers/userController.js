@@ -82,7 +82,7 @@ const updateUserNames = async (req, res) => {
     const { id, first_name, last_name } = req.body
     client.query(`UPDATE employee SET first_name = '${first_name}', last_name = '${last_name}' WHERE id = ${id}`, function (err, result) {
         if (err) {
-            res.status(400).json({error:err})
+            res.status(400).json({ error: err })
             console.log(err);
         } else {
             res.status(200).json({ action: true, message: "User updated" })
@@ -91,18 +91,38 @@ const updateUserNames = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
-    const {id, new_password, old_password} = req.body
+    const { id, new_password, old_password } = req.body
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(new_password, salt); 
-    client.query(`UPDATE employee SET password = '${hash}' WHERE id = ${id}`, function(err, result){
+    const hash = await bcrypt.hash(new_password, salt);
+
+    var sql = `SELECT * FROM employee WHERE id = ${id}`;
+    client.query(sql, async function (err, result) {
         if (err) {
-            res.status(400).json({error:err})
+            res.status(400).json(err)
             console.log(err);
         } else {
-            res.status(200).json({ action: true, message: "Password updated" })
+
+            const user = result.rows[0];
+            const match = await bcrypt.compare(old_password, user.password)
+            if (!match) {
+                res.status(400).json({ error: "Nesprávne heslo!" })
+                return
+            }
+            client.query(`UPDATE employee SET password = '${hash}' WHERE id = ${id}`, function (err, result) {
+                if (err) {
+                    res.status(400).json({ error: err })
+                    console.log(err);
+                } else {
+                    res.status(200).json({ action: true, message: "Password updated" })
+                }
+            });
+
         }
+
     });
-   
+
+
+
 }
 
 
