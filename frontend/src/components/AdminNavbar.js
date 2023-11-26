@@ -13,7 +13,7 @@ const AdminNavbar = () => {
                     <div className="mt-3 flex flex-col justify-around ">
                         <Link to={'/home'} className="cursor-pointer text-xl border-y border-gray-300  py-3 px-8">Home</Link>
                         <Link to={'/profile/${user.id}'} className="cursor-pointer text-xl border-b border-gray-300  py-3 px-8">Profile</Link>
-                        {/* <Link to={'/reservations/${user.id}'} className="cursor-pointer text-xl  border-b border-dark-text py-2">Reservations</Link> */}
+                        <Link to={'/reservations/${user.id}'} className="cursor-pointer text-xl  border-b border-dark-text py-2">Reservations</Link>
                     </div>
                 </div>
 
