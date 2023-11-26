@@ -24,9 +24,9 @@ const updateReservationStatus = async (reservationId) => {
             return { error: 'Reservation not found or not in the scheduled state' };
         }
 
-        // Update reservation status to 'active'
+        // Update reservation status to 'finished'
         const updateReservationSql = 'UPDATE reservation SET status = $1 WHERE id = $2';
-        await executeQuery(updateReservationSql, ['active', reservationId]);
+        await executeQuery(updateReservationSql, ['finished', reservationId]);
 
         // Check if end time is reached
         const checkEndTimeSql = 'SELECT end_time FROM reservation WHERE id = $1';
@@ -39,10 +39,10 @@ const updateReservationStatus = async (reservationId) => {
         if (currentTime >= endTime) {
             const deleteReservationSql = 'DELETE FROM reservation WHERE id = $1';
             await executeQuery(deleteReservationSql, [reservationId]);
-            return { message: 'Reservation status updated to active and reservation deleted' };
+            return { message: 'Reservation status updated to finished and reservation deleted' };
         }
 
-        return { message: 'Reservation status updated to active' };
+        return { message: 'Reservation status updated to finished' };
     } catch (error) {
         console.error('Error updating reservation status:', error);
         throw error;
