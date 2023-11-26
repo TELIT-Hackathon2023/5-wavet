@@ -15,6 +15,48 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/employee_id/:id', (req, res) => {
+    const employeeId = req.params.id;
+
+    const sqlReservations = `SELECT * FROM reservation WHERE employee_id = $1`;
+    client.query(sqlReservations, [employeeId], (reservationErr, reservationResult) => {
+        if (reservationErr) {
+            res.status(500).json({ error: reservationErr });
+        } else {
+            const reservations = reservationResult.rows;
+
+            const reservationsWithCars = [];
+
+            const fetchCarDetails = (index) => {
+                if (index < reservations.length) {
+                    const reservation = reservations[index];
+                    const carId = reservation.car_id; 
+
+                    const sqlCar = `SELECT * FROM car WHERE id = $1`;
+                    client.query(sqlCar, [carId], (carErr, carResult) => {
+                        if (carErr) {
+                            res.status(500).json({ error: carErr });
+                        } else {
+                            const carDetails = carResult.rows[0];
+
+                            reservationsWithCars.push({
+                                reservation: reservation,
+                                car: carDetails,
+                            });
+
+                            fetchCarDetails(index + 1);
+                        }
+                    });
+                } else {
+                    res.status(200).json(reservationsWithCars);
+                }
+            };
+
+            fetchCarDetails(0);
+        }
+    });
+});
+
 router.get('/id/:id', (req, res) => {
     const sql = `SELECT * FROM reservation WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
@@ -55,20 +97,22 @@ router.get('/in_range', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { employee_id, start_time, end_time, status } = req.body;
+    const { employee_id, start_time, end_time, status, spot_id, car_id} = req.body;
 
     const sql = `
-        INSERT INTO reservation (employee_id, start_time, end_time, status, created_at)
-        VALUES (${employee_id}, '${start_time}', '${end_time}', '${status}', NOW())
-        RETURNING *;
-    `;
+    INSERT INTO reservation (employee_id, start_time, end_time, status, created_at, spot_id, car_id)
+    VALUES ($1, TO_TIMESTAMP($2), TO_TIMESTAMP($3), $4, NOW(), $5, $6)
+    RETURNING *;
+`;
 
-    client.query(sql, (err, result) => {
+  
+    client.query(sql,[employee_id, start_time/1000, end_time/1000, status, spot_id, car_id], (err, result) => {
         if (err) {
             res.status(500).json({ error: err });
+            console.log(err);
         } else {
             const reservationId = result.rows[0].id;
-            scheduleAction(reservationId, start_time, end_time);
+            //scheduleAction(reservationId, start_time, end_time);
 
             res.status(201).json(result);
         }

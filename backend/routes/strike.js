@@ -25,6 +25,22 @@ router.get('/id/:id', (req, res) => {
     });
 });
 
+router.get('/employee/:employee_id', (req, res) => {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const sql = 'SELECT * FROM strike WHERE created_at >= $1 AND employee_id = $2';
+    const values = [thirtyDaysAgo, req.params.employee_id];
+
+    client.query(sql, values, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: err });
+        } else {
+            res.status(200).json(result.rows);
+        }
+    });
+});
+
 router.get('/employee_id/:id', (req, res) => {
     const sql = `SELECT * FROM strike WHERE employee_id = ${req.params.id}`;
     client.query(sql, (err, result) => {

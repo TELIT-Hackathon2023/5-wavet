@@ -16,6 +16,10 @@ const Home = () => {
     const { data: spots } = useFetch(`/api/spot`)
     const day = 24 * 60 * 60 * 1000;
     const [isPending, setIsPending] = useState(false)
+    const [canReserve, setCanReserve] = useState(true)
+    const [lastStrike, setLastStrike] = useState(Date.now())
+
+    var plusMonth = new Date()
     var X = new Date()
     X.setHours(0, 0, 0, 0)
     const [dates, setDates] = useState({
@@ -31,6 +35,30 @@ const Home = () => {
         end_time: Date.now() + convertTimeToMilliseconds(`00:${15}`),
         car_id: 0
     })
+
+    useEffect(() => {
+        const getStrikes = async () => {
+            const response = await fetch(`${process.env.REACT_APP_PATH}/api/strike?id=${user.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                }
+            });
+            const json = await response.json()
+
+            if (response.ok) {
+                if (json.length >= 3) {
+                    setCanReserve(false)
+                    json.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                    setLastStrike(new Date(json[0].created_at))
+                }
+            } else {
+                alert(json.error)
+            }
+        }
+        getStrikes()
+    }, [])
 
     useEffect(() => {
         setReservation({
@@ -76,7 +104,7 @@ const Home = () => {
     }
 
     const addReservation = async () => {
-        console.log(reservation);
+        console.log(reservation.car_id);
         setIsPending(true)
         const response = await fetch(`${process.env.REACT_APP_PATH}/api/reservation/`, {
             method: 'POST',
@@ -155,6 +183,48 @@ const Home = () => {
 
 
 
+
+    useEffect(() => {
+        if (!!spots) {
+            console.log(spots);
+            let temp = [...spots]
+
+            temp = temp.forEach(e => {
+                if (reservations.find(x => x.spot_id === e.id)) {
+                    e.color = 0x999999
+                } else {
+                    e.color = 0xe20074
+                }
+                e.lable = e.name.toUpperCase();
+
+            })
+            setParkingSpotsData(spots)
+        }
+
+
+    }, [spots])
+
+
+    // let parkingSpotsData = [
+    //     { x: 0, y: 0, z: 0, color: 0x00ff00, id: 99 }, // Green spot
+    //     { x: 2, y: 0, z: 0, color: 0xff0000, id: 11 }, // Red spot
+    //     // Add more parking spot data as needed
+    // ];
+
+
+
+
+
+    function addOneMonth(date) {
+        const newDate = new Date(date);
+        newDate.setUTCMonth(newDate.getUTCMonth() + 1);
+        return newDate;
+    }
+
+    useEffect(() => {
+        plusMonth = addOneMonth(lastStrike)
+    }, [lastStrike])
+
     return (
         <div className="flex">
             <AdminNavbar />
@@ -163,7 +233,7 @@ const Home = () => {
                 <ThreeScene className={"w-[10vw]"} parkingSpotsData={parkingSpotsData} handleSpotClick={handleSpotClick} />
                 <div className="fixed right-8 top-20 z-10 h-[80vh] w-80 bg-white p-5  ">
                     <h2 className="text-center text-2xl text-accent font-semibold">Reserve parking</h2>
-                    <form >
+                    {canReserve && <form >
                         <div className="flex flex-col my-5 child:mb-3 select-none">
                             <div className="flex justify-around items-center px-12">
                                 <span className={`font-bold cursor-pointer text-2xl ${dates.start > X.getTime() ? "text-accent" : "text-accent-light"}`} onClick={e => (dates.start - day < X.getTime() ? setDates({ ...dates, start: X.getTime() }) : setDates({ ...dates, start: dates.start - day }))}>&#60;</span>
@@ -180,13 +250,13 @@ const Home = () => {
                         </div>
 
                         <div className="btn w-min mx-auto" onClick={searchSpaces}>Search</div>
-                    </form>
-                    <form action="">
+                    </form>}
+                    {canReserve && <form action="">
                         <div className="flex flex-col my-5 child:mb-3">
-                            <input type="number" value={reservation.spot_id} onChange={e => setReservation({ ...reservation, spot_id: Number(e.target.value) })} name="" id="" />
+                            <input type="number" value={reservation.spot_id} onChange={e => setReservation({ ...reservation, spot_id: e.target.value })} name="" id="" />
                             {!!cars && <div className=" mx-auto text-center">
                                 <p>Car</p>
-                                <select onChange={e => setReservation({ ...reservation, car_id: Number(e.target.value) })}>
+                                <select onChange={e => setReservation({ ...reservation, car_id: e.target.value })}>
                                     <option value=""></option>
                                     {cars.map(e => (
                                         <option key={e.id} className="justify-between flex" value={e.id}>{e.name}  -- {e.evc} </option>
@@ -198,8 +268,15 @@ const Home = () => {
                         </div>
 
                         <div className="btn w-min mx-auto" onClick={addReservation}>Reserve</div>
-                    </form>
+                    </form>}
+                    {!canReserve &&
+                        <div className="flex h-full flex-col items-center justify-center">
 
+                            <h2 className="font-semibold text-3xl">Too many strikes!</h2>
+                            <p className="text-center">You cannot make any more reservations until</p>
+                            <p>{format(plusMonth, "EEEE d.L.yyyy")}</p>
+                        </div>
+                    }
                 </div>
 
 
