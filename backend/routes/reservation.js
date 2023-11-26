@@ -15,6 +15,48 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/employee_id/:id', (req, res) => {
+    const employeeId = req.params.id;
+
+    const sqlReservations = `SELECT * FROM reservation WHERE employee_id = $1`;
+    client.query(sqlReservations, [employeeId], (reservationErr, reservationResult) => {
+        if (reservationErr) {
+            res.status(500).json({ error: reservationErr });
+        } else {
+            const reservations = reservationResult.rows;
+
+            const reservationsWithCars = [];
+
+            const fetchCarDetails = (index) => {
+                if (index < reservations.length) {
+                    const reservation = reservations[index];
+                    const carId = reservation.car_id; 
+
+                    const sqlCar = `SELECT * FROM car WHERE id = $1`;
+                    client.query(sqlCar, [carId], (carErr, carResult) => {
+                        if (carErr) {
+                            res.status(500).json({ error: carErr });
+                        } else {
+                            const carDetails = carResult.rows[0];
+
+                            reservationsWithCars.push({
+                                reservation: reservation,
+                                car: carDetails,
+                            });
+
+                            fetchCarDetails(index + 1);
+                        }
+                    });
+                } else {
+                    res.status(200).json(reservationsWithCars);
+                }
+            };
+
+            fetchCarDetails(0);
+        }
+    });
+});
+
 router.get('/id/:id', (req, res) => {
     const sql = `SELECT * FROM reservation WHERE id = ${req.params.id}`;
     client.query(sql, (err, result) => {
