@@ -54,7 +54,7 @@ const signupUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
 
-        var sql = `INSERT INTO employee (password, email, first_name, last_name, verified) VALUES (${"'" + hash + "','" + email + "','" + firstName + "','" + lastName + "'," + false})`;
+        var sql = `INSERT INTO employee (password, email, first_name, last_name, verified, created_at) VALUES (${"'" + hash + "','" + email + "','" + firstName + "','" + lastName + "'," + false }, NOW()) RETURNING *`;
         client.query(sql, function (err, result) {
             if (err) {
                 res.status(400).json(err)
